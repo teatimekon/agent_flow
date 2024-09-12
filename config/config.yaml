@@ -1,0 +1,6 @@
+MODEL_NAME: gpt-4o-mini-2024-07-18
+MODEL_TEMPERATURE: 0
+MODEL_BASE_URL: https://api2.aigcbest.top/v1
+MODEL_API_KEY: sk-WbEpTniVLtZbePrk3e4fE2B1AbCd43B6B0FcCaC5A0478934
+MODEL_SUPPORTER: openai # openai / ollama / groq ...
+PROMPT_LANGUAGE: cn # cn / en
