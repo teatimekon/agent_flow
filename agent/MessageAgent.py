@@ -19,6 +19,6 @@ class MessageAgent(BaseAgent):
         res = self.llm.invoke(planner_prompt).content
         logger.info(f"res: {res}")
         task_guide_list = json.loads(res)
-        self.update_state("task_guide_list",task_guide_list)
+        self.update_state({"task_guide_list":task_guide_list, "llm_caller_times": self.get_llm_caller_times()})
         return self.state
 

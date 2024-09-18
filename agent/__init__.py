@@ -3,6 +3,8 @@ from .InputAgent import InputAgent
 from .BaseAgent import BaseAgent
 from .MessageAgent import MessageAgent
 from .PlannerAgent import PlannerAgent
-__all__ = ['InputAgent', 'BaseAgent','MessageAgent','PlannerAgent']
+from .ExecuteAgent import ExecuteAgent
+
+__all__ = ['InputAgent', 'BaseAgent','MessageAgent','PlannerAgent','ExecuteAgent']
 
 

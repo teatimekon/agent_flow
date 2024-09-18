@@ -13,7 +13,7 @@ class InputAgent(BaseAgent):
         logger.info(f"Response: {response}, type: {type(response)}")
         # 解析大模型的输出
         try:
-            self.update_state("input_agent_response",response)
+            self.update_state(input_agent_response=response)
             return self.state
             
         except json.JSONDecodeError:
@@ -25,6 +25,6 @@ class InputAgent(BaseAgent):
                 "product": "未知"
             } """
             
-            self.update_state("input_agent_response",error_response)
+            self.update_state(input_agent_response=error_response, llm_caller_times=self.get_llm_caller_times())
             return self.state
             

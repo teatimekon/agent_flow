@@ -5,12 +5,13 @@ from logs import logger
 from langchain.agents import Tool
 class BaseLLM:
     def __init__(self):
-        self.tools = self.init_tools()
+        self.tools = ToolRegistry.get_langchain_tools()
         self.llm = None
     
-    def init_tools(self):
-        tools = ToolRegistry.get_langchain_tools()
-        return tools
+    def refresh_tools(self):
+        # 更新 tools，在动态注册后调用该父类函数
+        self.tools = ToolRegistry.get_langchain_tools()
+    
     
     # def register_tool(self, *tools: BaseTool):   
     #     for tool in tools:

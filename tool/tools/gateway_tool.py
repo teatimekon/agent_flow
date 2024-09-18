@@ -6,9 +6,9 @@ from pydantic import BaseModel, Field
 
 class GatewayToolInput(BaseModel):
     """
-    useful when you need to check if the input is a valid input
+    检查输入的问题是否与七牛云相关，输出是是否与七牛云相关
     """
-    query: str = Field(description="The query to check if it is a valid input")
+    query: str = Field(description="用户的原始输入")
 
 
 @ToolRegistry.register

@@ -8,7 +8,7 @@ import pytz
 
 #根据传入的时区，返回当前时间
 class GetTimeToolInput(BaseModel):
-    "useful when you need to know the current time,this tool can get the current time"
+    "useful when you need to know the current/today/now time, this tool can get the current/today/now time"
     timezone: str = Field(description="The timezone mentioned in the query,like 'Asia/Shanghai',if you don't know the timezone,or the timezone is not mentioned,just use default timezone 'Asia/Shanghai'")
 
 @ToolRegistry.register
