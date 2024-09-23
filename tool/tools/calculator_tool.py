@@ -4,7 +4,7 @@ from tool import ToolRegistry
 
 class CalculatorToolInput(BaseModel):
     """
-    用于执行简单的数学计算
+    只能进行加减乘除四种运算，输入是两个数字和一个运算符，输出是计算结果
     """
     num1: float = Field(description="第一个数字")
     num2: float = Field(description="第二个数字")

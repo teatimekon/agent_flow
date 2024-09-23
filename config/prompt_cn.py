@@ -117,7 +117,7 @@ planner_prompt = """
           "task_type": "任务类别 类型是字符串",
           "dependency_task": 依赖的任务编号列表 类型是列表 如果没有依赖的任务，则填[-1],
           "task_input": "任务的输入 类型是字符串",
-          "task_output": "任务的输出 类型是字符串",
+          "task_should_output": "任务的输出 类型是字符串",
           "success_criteria": "成功标准 类型是字符串",
           "tool_call": "该任务可能用到的工具 值是工具的名称，如果没用到工具，则填None",
           "how_to_do_this_task": "根据你的推理，给出这个任务你任务的最佳的答案 类型是字符串"
@@ -148,14 +148,15 @@ task_execute_default_prompt = """
     你已经从依赖的任务中得到了一些信息：```{dependency_task_output}```，
     原始问题是：```{question}```，
     当前你的任务描述是：```{task_description}```
+    你可能会用到一下工具来执行该任务：```{suggest_tool}```
     - 你要根据以上信息，给出最适合当前任务的工具调用。
     - 切记！不要强行选择不合适的工具，如果你觉得工具不匹配当前任务的目的，你将不需要调用工具，你将根据当前任务的描述，结合依赖任务的输出，调用你的大模型能力给出你当前任务的输出。
     """
 task_execute_evaluate_prompt = """
-    你是一个审阅专家，你的任务是审阅一个问题的回答并提供反馈。
+    你是一个审阅专家，你的任务是审阅一个问题的回答步骤并提供反馈。
     原始问题是：```{question}```
     
-    以下是问题的回答：
+    以下是问题执行的步骤的回答：
     ```{summary_task_output}```
     您的反馈应包括通过或未通过审阅的原因以及改进建议。
     
@@ -166,10 +167,12 @@ task_execute_evaluate_prompt = """
     {{
     "feedback":"如果回复未通过您的审阅，请提供关于通过审阅所需内容的精确反馈。",
     "pass_review":"True/False",
+    "should_retry_index": task_id,
     "comprehensive":"True/False",
     }}
     feedback 字段是审阅反馈，
     pass_review 字段是审阅是否通过，
+    should_retry_index 应该从哪个任务id开始重试，如果是-1，则表示不需要重试，
     comprehensive 字段是总结是否全面，
     
     确保你的输出只能是 json 字符串，不能有例如```json等任何的额外符号！

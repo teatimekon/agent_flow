@@ -14,8 +14,10 @@ class Task:
     task_type: str
     task_dependency: List[int]
     task_should_output: str
+    task_suggest_tool: str
     task_status: str = "pending"
-    task_output: str = ""
+    task_output: str = "",
+    
     def __str__(self):
         return f"任务id是：{self.task_id},  \
         任务的描述是：{self.task_description},  \
@@ -26,7 +28,7 @@ class Task:
 class ExecuteAgent(BaseAgent):
     def __init__(self, state: AgentState, tool_call: bool = False):
         super().__init__(state=state, tool_call=tool_call)
-        
+        self.all_task_result = ""
         
     def invoke(self):
         plan_task_list = self.state["plan_task_list"]["task_list"]
@@ -65,7 +67,8 @@ class ExecuteAgent(BaseAgent):
                 task["task_description"],
                 task["task_type"],
                 task["dependency_task"],
-                task["task_output"]
+                task["task_should_output"],
+                task["tool_call"]
             )
             task_dict[task["task_number"]] = new_task
             task_list.append(new_task)
@@ -87,13 +90,13 @@ class ExecuteAgent(BaseAgent):
         task_description = task.task_description
         
         # 构建prompt
-        all_task_result = ""
         for _task in task_dict.values():
-            all_task_result += str(_task)
-            
+            if _task.task_type != "总结问题" and _task.task_type != "评估问题":
+                self.all_task_result += str(_task)
+                
         summary_prompt = task_execute_summary_prompt.format(
             question=question,
-            all_task_result=all_task_result
+            all_task_result=self.all_task_result
         )
         logger.info(f"\033[0;35m execute_prompt:{summary_prompt} \033[0m") 
         
@@ -102,29 +105,33 @@ class ExecuteAgent(BaseAgent):
         task.task_output = ai_msg
         task.task_status = "success"
         logger.info(f"\033[0;34m Summary task_output:{ai_msg} \033[0m")  
-        
+        self.update_state(
+            execute_task_output=ai_msg, 
+        )
     def execute_evaluate_task(self, task: Task,task_dict: Dict[int, Task],question: str):
         # 执行 evaluate 任务的操作
         task_id = task.task_id
         task_type = task.task_type
         task_description = task.task_description
         
-        summary_task_output = [_task.task_output for _task in task_dict.values() if _task.task_type == "总结问题"]
+        # summary_task_output = [_task.task_output for _task in task_dict.values() if _task.task_type == "总结问题"]
         
         feedback = ""
         # 构建prompt
         evaluate_prompt = task_execute_evaluate_prompt.format( 
             question=question,
-            summary_task_output=str(summary_task_output),
+            summary_task_output=self.all_task_result + '\n' +"以下是问题的总结：" + self.state["execute_task_output"],
             feedback=feedback
         )
         
         logger.info(f"\033[0;35m execute_prompt:{evaluate_prompt} \033[0m") 
         
         # 调用大模型
-        ai_msg = self.llm.invoke(evaluate_prompt).content
+        ai_msg = self.llm.invoke(evaluate_prompt,json_strict=True)
         task.task_output = ai_msg
         task.task_status = "success"
+        if ai_msg['pass_review'] == False:
+            should_retry_index = ai_msg['should_retry_index']
         logger.info(f"\033[0;34m Evaluate task_output:{ai_msg} \033[0m")  
 
     def execute_default_task(self, task: Task, task_dict: Dict[int, Task],question: str):
@@ -132,6 +139,7 @@ class ExecuteAgent(BaseAgent):
         task_id = task.task_id
         task_type = task.task_type
         task_description = task.task_description
+        suggest_tool = task.task_suggest_tool
         # 获取依赖任务的输出
         dependency_task_output = self.get_dependency_output(task, task_dict)
         
@@ -139,13 +147,14 @@ class ExecuteAgent(BaseAgent):
         execute_prompt = task_execute_default_prompt.format(
             question=question,
             task_description=task_description,
-            dependency_task_output=dependency_task_output
+            dependency_task_output=dependency_task_output,
+            suggest_tool=suggest_tool   
         )
         
         logger.info(f"\033[0;35m execute_prompt:{execute_prompt} \033[0m") 
         
         # 调用大模型
-        ai_msg = self.llm.invoke(execute_prompt)
+        ai_msg = self.llm.invoke(execute_prompt,tool_call=True)
         task_output = ""
         if ai_msg.tool_calls:   #如果ai_msg有tool_calls，说明需要调用工具
             logger.info(f"\033[0;34m tool_calls:{ai_msg.tool_calls} \033[0m")  

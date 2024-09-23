@@ -49,8 +49,10 @@ graph.add_edge("execute_agent",END)
 
 workflow = graph.compile()
 
-res = workflow.invoke({"question":"一位农夫带着一头狼，一只羊和一筐白菜过河，河边有一条小船，农夫划船每次只能载狼、羊、白菜三者中的一个过河。农夫不在旁边时，羊会喜欢狼，狼会喜欢白菜。问农夫该如何过河"})
+res = workflow.invoke({"question":"给我写一个接入七牛云存储的 demo"})
 #action 的问题，具体如何执行，需要 tool 接入 exp：
-print(res)
+with open('output_1.md', 'w', encoding='utf-8') as f:
+    f.write(res['execute_task_output'][0].content)
+print("结果已保存到 output.md 文件中")
 
 print(res["llm_caller_times"])

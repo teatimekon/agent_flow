@@ -5,6 +5,8 @@ from typing_extensions import TypedDict
 
 class AgentState(TypedDict):
     question: str
+    messages: Annotated[list, add_messages]
+    tool_messages: Annotated[list, add_messages]
     input_agent_response: Annotated[list, add_messages] # 由InputAgent生成
     message_agent_response: Annotated[list, add_messages] 
     task_guide_list: list   # 由MessageAgent生成

@@ -27,7 +27,7 @@ class PlannerAgent(BaseAgent):
 
         messages = [{"role": "user", "content": formatted_planner_prompt}]
         response = self.llm.invoke(messages,json_strict=True, **kwargs)  #大模型输出
-        logger.info(f"Planner response: {response}")
+        logger.info(f"规划者响应:\n{json.dumps(response, ensure_ascii=False, indent=2)}")
         
         try:
             # plan = json.loads(response.content)

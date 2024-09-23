@@ -50,7 +50,7 @@ class LLMCaller(BaseLLM):
             )
         else:
             raise ValueError("Unsupported LLM supporter")
-        return self.llm_wrapper.get_llm()
+        return self.llm_wrapper
 
     def invoke(self, messages, tool_call:bool=False, json_strict:bool=False, **kwargs):
         from time import time

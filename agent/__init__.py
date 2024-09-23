@@ -4,7 +4,9 @@ from .BaseAgent import BaseAgent
 from .MessageAgent import MessageAgent
 from .PlannerAgent import PlannerAgent
 from .ExecuteAgent import ExecuteAgent
+from .ToolCallAgent import ToolCallAgent
+from .UpDownloadAgent import UpDownloadAgent
 
-__all__ = ['InputAgent', 'BaseAgent','MessageAgent','PlannerAgent','ExecuteAgent']
+__all__ = ['InputAgent', 'BaseAgent','MessageAgent','PlannerAgent','ExecuteAgent','ToolCallAgent','UpDownloadAgent']
 
 
