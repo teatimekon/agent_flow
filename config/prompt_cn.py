@@ -163,11 +163,16 @@ task_execute_evaluate_prompt = """
     反馈：{feedback}
 
     您的回复必须采用以下 json 格式：
-    "feedback"："如果回复未通过您的审阅，请提供关于通过审阅所需内容的精确反馈。"，
-    "pass_review"："True/False"，
-    "comprehensive"："True/False"，
-    "citations_provided"："True/False"，
-    "relevant_to_research_question"："True/False"，
+    {{
+    "feedback":"如果回复未通过您的审阅，请提供关于通过审阅所需内容的精确反馈。",
+    "pass_review":"True/False",
+    "comprehensive":"True/False",
+    }}
+    feedback 字段是审阅反馈，
+    pass_review 字段是审阅是否通过，
+    comprehensive 字段是总结是否全面，
+    
+    确保你的输出只能是 json 字符串，不能有例如```json等任何的额外符号！
     
     """
     

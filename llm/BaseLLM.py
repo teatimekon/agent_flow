@@ -3,6 +3,7 @@ from langchain_core.tools import BaseTool
 from langchain_community.tools import DuckDuckGoSearchResults
 from logs import logger
 from langchain.agents import Tool
+
 class BaseLLM:
     def __init__(self):
         self.tools = ToolRegistry.get_langchain_tools()

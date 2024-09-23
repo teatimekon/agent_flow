@@ -52,18 +52,22 @@ class LLMCaller(BaseLLM):
             raise ValueError("Unsupported LLM supporter")
         return self.llm_wrapper.get_llm()
 
-    def invoke(self, messages, tool_call:bool=False,**kwargs):
+    def invoke(self, messages, tool_call:bool=False, json_strict:bool=False, **kwargs):
         from time import time
         start = time()
         self.caller_times += 1
-        if tool_call:
-            res = self.llm_with_tool.invoke(messages, **kwargs)
+        caller_llm = self.llm_with_tool if tool_call else self.llm
+        #如果 kwargs 有某个键值对
+        if json_strict:
+            from langchain_core.output_parsers import JsonOutputParser
+            json_out_chain = caller_llm | JsonOutputParser()
+            res = json_out_chain.invoke(messages)
         else:
-            res = self.llm.invoke(messages, **kwargs)
+            res = caller_llm.invoke(messages, **kwargs)
+        
         end = time()
         logger.info(f"Time taken: {end - start} seconds")
-        return res
-    
+        return res    
     def get_caller_times(self):
         return self.caller_times
     

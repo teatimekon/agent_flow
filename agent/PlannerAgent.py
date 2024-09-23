@@ -26,14 +26,12 @@ class PlannerAgent(BaseAgent):
         )
 
         messages = [{"role": "user", "content": formatted_planner_prompt}]
-        response = self.llm.invoke(messages, **kwargs)  #大模型输出
-        tool_calls = response.tool_calls
+        response = self.llm.invoke(messages,json_strict=True, **kwargs)  #大模型输出
+        logger.info(f"Planner response: {response}")
         
-        logger.info(f"Planner response: {response.content}")
-        logger.info(f"tool_calls: {tool_calls}")
         try:
-            plan = json.loads(response.content)
-            self.update_state(plan_task_list=plan, llm_caller_times=self.get_llm_caller_times())
+            # plan = json.loads(response.content)
+            self.update_state(plan_task_list=response, llm_caller_times=self.get_llm_caller_times())
         except json.JSONDecodeError:
             logger.error("Failed to parse LLM response as JSON")
             self.update_state(plan_task_list=[], llm_caller_times=self.get_llm_caller_times())
