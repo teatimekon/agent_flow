@@ -5,8 +5,8 @@ from .MessageAgent import MessageAgent
 from .PlannerAgent import PlannerAgent
 from .ExecuteAgent import ExecuteAgent
 from .ToolCallAgent import ToolCallAgent
-from .UpDownloadAgent import UpDownloadAgent
-
-__all__ = ['InputAgent', 'BaseAgent','MessageAgent','PlannerAgent','ExecuteAgent','ToolCallAgent','UpDownloadAgent']
+from .RouterAgent import UpDownloadAgent
+from .Agent import Agent,AgentFactory
+__all__ = ['InputAgent', 'BaseAgent','MessageAgent','PlannerAgent','ExecuteAgent','ToolCallAgent','RouterAgent','Agent','AgentFactory']
 
 

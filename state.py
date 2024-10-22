@@ -3,7 +3,7 @@ from typing import Annotated
 from langchain_openai import ChatOpenAI
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.messages import BaseMessage,AIMessage,ToolMessage
-from langchain_core.pydantic_v1 import BaseModel
+from pydantic import BaseModel
 from typing_extensions import TypedDict
 
 from langgraph.checkpoint.memory import MemorySaver

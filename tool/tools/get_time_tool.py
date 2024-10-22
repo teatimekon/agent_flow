@@ -1,4 +1,4 @@
-from langchain.pydantic_v1 import BaseModel, Field      # 定义传入的参数模式，打上准确的描述标签
+from pydantic import BaseModel, Field      # 定义传入的参数模式，打上准确的描述标签
 from langchain_core.tools import BaseTool, tool
 from tool import ToolRegistry 
 
